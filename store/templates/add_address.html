@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<h2>Add Delivery Address</h2>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<input
+ type="text"
+ name="full_name"
+ class="form-control mb-3"
+ placeholder="Full Name"
+ required>
+
+<input
+ type="text"
+ name="phone"
+ class="form-control mb-3"
+ placeholder="Phone Number"
+ required>
+
+<input
+ type="text"
+ name="county"
+ class="form-control mb-3"
+ placeholder="County"
+ required>
+
+<input
+ type="text"
+ name="town"
+ class="form-control mb-3"
+ placeholder="Town"
+ required>
+
+<textarea
+ name="address"
+ class="form-control mb-3"
+ placeholder="Street / Estate / Building"
+ required></textarea>
+
+<button
+ class="btn btn-primary">
+
+Save Address
+
+</button>
+
+</form>
+
+</div>
+
+{% endblock %}
+

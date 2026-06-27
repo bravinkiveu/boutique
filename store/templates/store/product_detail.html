@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row">
+
+<div class="col-md-6">
+
+<img
+    id="mainImage"
+    src="{{ product.image.url }}"
+    class="img-fluid mb-3">
+
+<div class="row">
+
+{% for image in images %}
+
+<div class="col-md-3">
+
+<img
+    src="{{ image.image.url }}"
+    class="img-thumbnail"
+    onclick="document.getElementById('mainImage').src=this.src;"
+    style="cursor:pointer;">
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+<div class="col-md-6">
+
+<h2>{{ product.name }}</h2>
+
+<h3>KSh {{ product.price }}</h3>
+
+<p>Category: {{ product.category }}</p>
+
+{% if product.stock == 0 %}
+
+<div class="alert alert-danger">
+
+    Out Of Stock
+
+</div>
+
+{% elif product.stock <= 5 %}
+
+<div class="alert alert-warning">
+
+    Only {{ product.stock }} Left!
+
+</div>
+
+{% else %}
+
+<div class="alert alert-success">
+
+    In Stock
+
+</div>
+
+{% endif %}
+
+{% if product.stock > 0 %}
+
+<a href="{% url 'add_to_cart' product.id %}"
+   class="btn btn-success me-2">
+   Add To Cart
+</a>
+
+{% else %}
+
+<button class="btn btn-danger me-2" disabled>
+   Out Of Stock
+</button>
+
+{% endif %}
+
+
+<a href="{% url 'add_to_wishlist' product.id %}"
+   class="btn btn-outline-danger">
+   ❤️ Add To Wishlist
+</a>
+
+<hr>
+
+<h3>Leave a Review</h3>
+
+{% if user.is_authenticated %}
+
+<form method="POST" action="{% url 'add_review' product.id %}">
+    {% csrf_token %}
+
+    <select name="rating" class="form-select mb-3" style="width: 160px;">
+        <option value="5">⭐⭐⭐⭐⭐</option>
+        <option value="4">⭐⭐⭐⭐</option>
+        <option value="3">⭐⭐⭐</option>
+        <option value="2">⭐⭐</option>
+        <option value="1">⭐</option>
+    </select>
+
+    <textarea
+        name="comment"
+        class="form-control mb-3"
+        placeholder="Write review..."
+        required></textarea>
+
+    <button type="submit" class="btn btn-primary">Submit Review</button>
+</form>
+
+{% else %}
+
+<p>Please login to leave a review.</p>
+
+{% endif %}
+
+<hr>
+
+<h3>Customer Reviews</h3>
+
+{% for review in reviews %}
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h5>{{ review.user.username }}</h5>
+        <p>Rating: {{ review.rating }}/5</p>
+        <p>{{ review.comment }}</p>
+        <small>{{ review.created_at|date:'Y-m-d H:i' }}</small>
+    </div>
+</div>
+
+{% empty %}
+
+<p>No reviews yet.</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+<hr>
+
+<h3>You May Also Like</h3>
+
+<div class="row">
+
+{% for item in related_products %}
+
+<div class="col-md-3">
+
+    <div class="card mb-3">
+
+        <img
+        src="{{ item.image.url }}"
+        class="card-img-top">
+
+        <div class="card-body">
+
+            <h5>{{ item.name }}</h5>
+
+            <p>KSh {{ item.price }}</p>
+
+            {% if item.stock == 0 %}
+
+            <span class="badge bg-danger">
+                Out Of Stock
+            </span>
+
+            {% elif item.stock <= 5 %}
+
+            <span class="badge bg-warning text-dark">
+                Low Stock
+            </span>
+
+            {% else %}
+
+            <span class="badge bg-success">
+                In Stock
+            </span>
+
+            {% endif %}
+
+            <a
+            href="{% url 'product_detail' item.id %}"
+            class="btn btn-primary">
+
+            View Product
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

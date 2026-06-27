@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Bravin Boutique Dashboard</h1>
+
+
+<div class="row">
+
+    <div class="col-md-4">
+        <div class="card p-3 mb-3">
+            <h3>{{ total_products }}</h3>
+            <p>Products</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-3 mb-3">
+            <h3>{{ total_orders }}</h3>
+            <p>Orders</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-3 mb-3">
+            <h3>KSh {{ total_revenue }}</h3>
+            <p>Revenue</p>
+        </div>
+    </div>
+
+</div>
+
+<hr>
+
+<h2>Recent Orders</h2>
+
+<table class="table">
+    <tr>
+        <th>Customer</th>
+        <th>Total</th>
+    </tr>
+
+    {% for order in recent_orders %}
+    <tr>
+        <td>{{ order.customer_name }}</td>
+        <td>KSh {{ order.total_amount }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

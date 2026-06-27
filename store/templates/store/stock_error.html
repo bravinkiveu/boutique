@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Stock Error</h2>
+
+<p>
+Sorry,
+{{ product.name }}
+does not have enough stock.
+</p>
+
+<a href="/cart/" class="btn btn-primary">
+Back To Cart
+</a>
+
+{% endblock %}
