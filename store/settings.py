@@ -84,8 +84,32 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
-SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+# Use Django's default session backend for compatibility on all deployments.
+# (Signed-cookie sessions can break/behave unexpectedly behind certain proxies.)
 DEFAULT_FROM_EMAIL = 'Bravin Boutique <bravinkiveu@gmail.com>'
+
+# Cookie/security settings for deployments behind HTTPS/proxies (e.g., Vercel).
+SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'true').lower() == 'true'
+CSRF_COOKIE_SECURE = os.environ.get('CSRF_COOKIE_SECURE', 'true').lower() == 'true'
+
+# If you're behind a reverse proxy, this tells Django to trust the X-Forwarded-Proto header.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') if SESSION_COOKIE_SECURE else None
+
+# Basic logging to surface errors during admin login failures.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
+
 
 # Email Configuration
 

@@ -1,5 +1,5 @@
-- [ ] Locate how “admin dashboard” should be displayed (custom /admin/dashboard/ vs Django admin site)
-- [x] Protect the custom dashboard view (`/admin/dashboard/`) so it’s only accessible by staff/superuser
-- [ ] Ensure dashboard UI is reachable for admins (add link/ensure navigation if needed)
-- [ ] Manual test: login as non-staff -> forbidden; login as staff -> dashboard loads
+- [ ] Inspect current admin login-related settings/templates
+- [x] Fix admin login 500 by updating store/settings.py (remove signed cookie session engine; harden session/csrf security; add logging)
 
+- [ ] Run local checks/tests (python manage.py check)
+- [ ] Re-deploy (push changes)
