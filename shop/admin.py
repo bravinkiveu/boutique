@@ -9,31 +9,55 @@ class OrderItemInline(admin.TabularInline):
     can_delete = False
 
 
+@admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('customer_name', 'phone', 'total_amount', 'created_at')
+    list_display = ('customer_name', 'email', 'phone', 'total_amount', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('customer_name', 'email', 'phone')
     inlines = [OrderItemInline]
+    readonly_fields = ('created_at',)
+    date_hierarchy = 'created_at'
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category', 'price', 'stock', 'stock_status_badge')
+    list_filter = ('category',)
+    search_fields = ('name',)
+    list_editable = ('price', 'stock')
 
-    list_display = (
-        'name',
-        'price',
-        'stock'
-    )
-
-    list_filter = (
-        'category',
-    )
-
-    search_fields = (
-        'name',
-    )
+    @admin.display(description='Status')
+    def stock_status_badge(self, obj):
+        status = obj.stock_status()
+        if status == 'out':
+            return '🔴 Out of Stock'
+        elif status == 'low':
+            return '🟡 Low Stock'
+        return '🟢 In Stock'
 
 
-admin.site.register(Category)
-admin.site.register(Order, OrderAdmin)
-admin.site.register(OrderItem)
-admin.site.register(Review)
-admin.site.register(Wishlist)
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
+
+
+@admin.register(OrderItem)
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ('order', 'product', 'quantity', 'price')
+    list_filter = ('order',)
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('product', 'user', 'rating', 'created_at')
+    list_filter = ('rating', 'created_at')
+    search_fields = ('product__name', 'user__username', 'comment')
+    readonly_fields = ('created_at',)
+
+
+@admin.register(Wishlist)
+class WishlistAdmin(admin.ModelAdmin):
+    list_display = ('user', 'product', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('user__username', 'product__name')
