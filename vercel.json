@@ -3,9 +3,17 @@
     {
       "src": "store/wsgi.py",
       "use": "@vercel/python"
+    },
+    {
+      "src": "store/media/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
+    {
+      "src": "/media/(.*)",
+      "dest": "store/media/$1"
+    },
     {
       "src": "/(.*)",
       "dest": "store/wsgi.py"
