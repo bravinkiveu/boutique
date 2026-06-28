@@ -1,4 +1,4 @@
-﻿from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q, Sum
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMultiAlternatives
@@ -321,12 +321,24 @@ def dashboard(request):
         from django.http import HttpResponseForbidden
         return HttpResponseForbidden("Forbidden")
 
+    from django.contrib.auth.models import User
+    from django.utils import timezone
+
     total_products = Product.objects.count()
     total_orders = Order.objects.count()
     total_revenue = Order.objects.aggregate(
         Sum('total_amount')
     )['total_amount__sum'] or 0
-    recent_orders = Order.objects.order_by('-created_at')[:5]
+    total_customers = User.objects.filter(is_staff=False, is_superuser=False).count()
+
+    recent_orders = Order.objects.order_by('-created_at')[:8]
+    low_stock_products = Product.objects.filter(stock__lte=5).order_by('stock')[:5]
+
+    today = timezone.now().date()
+    today_orders = Order.objects.filter(created_at__date=today).count()
+    today_revenue = Order.objects.filter(
+        created_at__date=today
+    ).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
 
     return render(
         request,
@@ -335,9 +347,14 @@ def dashboard(request):
             'total_products': total_products,
             'total_orders': total_orders,
             'total_revenue': total_revenue,
+            'total_customers': total_customers,
             'recent_orders': recent_orders,
+            'low_stock_products': low_stock_products,
+            'today_orders': today_orders,
+            'today_revenue': today_revenue,
         }
     )
+
 
 
 
